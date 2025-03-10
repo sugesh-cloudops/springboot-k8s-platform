@@ -1,0 +1,36 @@
+replicaCount: 1
+
+image:
+  repository: sugesh23/devops-coding-challenge-app
+  tag: v1
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 8080
+
+env:
+  SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/challenge?createDatabaseIfNotExist=true
+  SPRING_DATASOURCE_WRITER_URL: jdbc:mysql://db:3306/challenge?createDatabaseIfNotExist=true
+  SPRING_DATASOURCE_USERNAME: root
+  SPRING_DATASOURCE_PASSWORD: dev
+
+mysql:
+  image: mysql:8.0
+  rootPassword: dev
+  database: challenge
+
+serviceAccount:
+  create: true
+  name: crewmeister-challenge
+ingress:
+  enabled: true
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+fullnameOverride: ""
