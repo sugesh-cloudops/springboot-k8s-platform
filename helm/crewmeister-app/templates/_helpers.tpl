@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "helm-crewmeister.name" -}}
+{{- define "crewmeister-app.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "helm-crewmeister.fullname" -}}
+{{- define "crewmeister-app.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "helm-crewmeister.chart" -}}
+{{- define "crewmeister-app.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "helm-crewmeister.labels" -}}
-helm.sh/chart: {{ include "helm-crewmeister.chart" . }}
-{{ include "helm-crewmeister.selectorLabels" . }}
+{{- define "crewmeister-app.labels" -}}
+helm.sh/chart: {{ include "crewmeister-app.chart" . }}
+{{ include "crewmeister-app.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "helm-crewmeister.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "helm-crewmeister.name" . }}
+{{- define "crewmeister-app.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "crewmeister-app.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "helm-crewmeister.serviceAccountName" -}}
+{{- define "crewmeister-app.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "helm-crewmeister.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "crewmeister-app.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
