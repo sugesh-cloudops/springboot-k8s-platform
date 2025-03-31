@@ -1,25 +1,26 @@
 # Build Stage
-FROM openjdk:17-slim as builder
+FROM eclipse-temurin:17-jdk-jammy as builder
 
-WORKDIR /usr/src/app/
+WORKDIR /app
 
-COPY . .
+# Pre-cache dependencies
+COPY pom.xml mvnw ./
+COPY .mvn .mvn
+RUN ./mvnw dependency:go-offline
 
+# Copy source files
+COPY src ./src
+
+# Build the app
 RUN ./mvnw clean package -DskipTests
 
-# Runtime Stage
-FROM openjdk:17-slim
+# Runtime Stage (smallest possible)
+FROM eclipse-temurin:17-jre-jammy
 
-WORKDIR /usr/src/app/
+WORKDIR /app
 
-# Copy built JAR file from the builder stage
-COPY --from=builder /usr/src/app/target/*.jar /usr/src/app/crewmeisterchallenge-0.0.1-SNAPSHOT.jar
+COPY --from=builder /app/target/*.jar app.jar
 
-# Install MySQL client for database connectivity
-RUN apt-get update && apt-get install -y default-mysql-client
-
-# Expose the application port
 EXPOSE 8080
 
-# Set entry point to run 
-ENTRYPOINT ["java", "-jar", "crewmeisterchallenge-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

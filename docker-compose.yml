@@ -25,4 +25,4 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    entrypoint: ["java", "-jar", "crewmeisterchallenge-0.0.1-SNAPSHOT.jar"]
+   
