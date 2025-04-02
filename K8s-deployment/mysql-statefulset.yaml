@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mysql
 spec:
   selector:
     matchLabels:
       app: mysql
+  serviceName: mysql-headless
   replicas: 1
   template:
     metadata:
@@ -15,6 +16,9 @@ spec:
       containers:
         - name: mysql
           image: mysql:8
+          ports:
+            - containerPort: 3306
+              name: mysql
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -26,24 +30,14 @@ spec:
                 configMapKeyRef:
                   name: mysql-config
                   key: database-name
-          ports:
-            - containerPort: 3306
           volumeMounts:
-            - name: mysql-storage
+            - name: mysql-data
               mountPath: /var/lib/mysql
-      volumes:
-        - name: mysql-storage
-          persistentVolumeClaim:
-            claimName: mysql-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: db  # matches "db" in application.yaml
-spec:
-  selector:
-    app: mysql
-  ports:
-    - port: 3306
-      targetPort: 3306
-  clusterIP: None
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
