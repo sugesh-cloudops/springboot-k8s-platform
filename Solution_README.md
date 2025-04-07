@@ -135,6 +135,28 @@ The following secrets need to be set up in your GitHub repository for the workfl
 
 ---
 
+# --------------------
+# README Snippet
+# --------------------
+# ⚠️ Pre-requisite: Manually create the AWS credentials secret in your cluster
+#
+# This secret is required by the SecretStore defined in this chart. It must be created **outside Helm**:
+#
+# ```bash
+# kubectl create secret generic aws-credentials \
+#   --from-literal=access-key-id=<AWS_ACCESS_KEY_ID> \
+#   --from-literal=secret-access-key=<AWS_SECRET_ACCESS_KEY>
+# ```
+#
+# Replace `<AWS_ACCESS_KEY_ID>` and `<AWS_SECRET_ACCESS_KEY>` with your real values.
+#
+# Never commit your AWS credentials to Git or store them in `values.yaml`.
+#
+# Then install the chart:
+#
+# ```bash
+# helm install my-app ./crew-mysql-chart
+# ```
 
 
 
