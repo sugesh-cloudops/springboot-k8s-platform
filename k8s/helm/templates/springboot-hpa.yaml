@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: springboot-hpa
+  name: {{ .Release.Name }}-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: springboot-app
+    name: {{ .Release.Name }}-app
   minReplicas: 1
-  maxReplicas: 2
+  maxReplicas: 5
   targetCPUUtilizationPercentage: 50

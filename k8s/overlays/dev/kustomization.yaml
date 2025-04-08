@@ -1,0 +1,10 @@
+namespace: dev
+
+resources:
+  - ../../base
+  - namespace.yaml
+  - secret-store.yaml
+  - configmap.yaml
+  - mysql-external-secret.yaml
+
+patches: []

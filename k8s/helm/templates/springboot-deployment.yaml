@@ -1,9 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: springboot-app
+  name: {{ .Release.Name }}-app
+  labels:
+    app: springboot-app
 spec:
-  replicas: 1
+  replicas: {{ .Values.app.replicaCount }}
   selector:
     matchLabels:
       app: springboot-app
@@ -12,25 +14,26 @@ spec:
       labels:
         app: springboot-app
     spec:
+      serviceAccountName: my-app-sa
       containers:
         - name: springboot-app
-          image: sugesh23/springboot:latest  
+          image: {{ .Values.app.image }}
           ports:
             - containerPort: 8080
           env:
             - name: SPRING_APPLICATION_NAME
-              value: app
+              value: {{ .Values.app.name }}
             - name: SPRING_DATASOURCE_USERNAME
               value: root
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mysql-secret
-                  key: mysql-password
+                  key: mysql-root-password
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:mysql://mysql-0.mysql-headless:3306/challenge?createDatabaseIfNotExist=true
+              value: jdbc:mysql://mysql-0.mysql-headless:3306/{{ .Values.mysql.database }}?createDatabaseIfNotExist=true
             - name: SPRING_DATASOURCE_WRITER_URL
-              value: jdbc:mysql://mysql-0.mysql-headless:3306/challenge?createDatabaseIfNotExist=true
+              value: jdbc:mysql://mysql-0.mysql-headless:3306/{{ .Values.mysql.database }}?createDatabaseIfNotExist=true
             - name: ACTUATOR_ENDPOINTS
               value: health,info,prometheus
           readinessProbe:
@@ -43,19 +46,5 @@ spec:
             httpGet:
               path: /actuator/health
               port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 5
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: springboot-service
-spec:
-  selector:
-    app: springboot-app
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
-  type: LoadBalancer
+            initialDelaySeconds: 15
+            periodSeconds: 10
