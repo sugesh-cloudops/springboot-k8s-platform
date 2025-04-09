@@ -59,10 +59,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Extract Git SHA
+        run: echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       - name: Build and Push Docker Image
         run: |
-          docker buildx build --platform linux/amd64,linux/arm64 \
-            -t ${{ secrets.DOCKER_USERNAME }}/devops-coding-challenge:latest --push .
+          docker buildx build --platform linux/amd64 \
+            -t ${{ secrets.DOCKER_USERNAME }}/devops-coding-challenge:${{ env.IMAGE_TAG }} --push .
 
   updatek8s:
     runs-on: ubuntu-latest
@@ -89,7 +92,11 @@ jobs:
       - name: Update kubeconfig for EKS
         run: aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
 
-      - name: Deploy Helm Chart 
+      - name: Deploy Helm Chart
         run: |
-          helm install crewmeister-app ./helm/crewmeister-app \
+          helm upgrade --install my-app ./k8s/helm \
+            --namespace dev \
+            -f ./k8s/values/dev-values.yaml \
+            --set image.tag=${{ env.sha_tag }} \
+            --set aws.region=${{ secrets.AWS_REGION }} \
     

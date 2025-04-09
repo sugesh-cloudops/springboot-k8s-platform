@@ -1,14 +1,24 @@
 app:
-  name: app
-  image: sugesh23/springboot:latest
+  name: app-dev
+  image: sugesh23/springboot
+  tag: "latest"  # Will be dynamically set via CI/CD (e.g., commit SHA)
   replicaCount: 1
 
 mysql:
   database: challenge
+  image: mysql:8
+  port: 3306
+  pvc:
+    storage: 1Gi
+  secretKeyRef:
+    name: mysql-secret
+    key: mysql-root-password
 
 service:
+  name: my-app-service
   type: LoadBalancer
   port: 80
+  targetPort: 8080
 
 autoscaling:
   enabled: true
@@ -22,13 +32,22 @@ readinessProbe:
   initialDelaySeconds: 10
   periodSeconds: 5
 
-livenessProbe:
+livenessProbe: 
   path: /actuator/health
   port: 8080
   initialDelaySeconds: 15
   periodSeconds: 10
 
+resources:
+  limits:
+    cpu: 250m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
 aws:
   region: us-west-2
   secretName: devops-challenge-secret
   secretProperty: mysql-root-password
+  credentialsSecretRef: aws-credentials  # Referenced in SecretStore
