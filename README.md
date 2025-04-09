@@ -1,4 +1,4 @@
-# 🚀 Crewmeister Spring Boot App on Kubernetes
+# 🚀 Spring Boot App on Kubernetes
 
 A production-grade Kubernetes setup for deploying a Spring Boot + MySQL application, leveraging:
 
@@ -79,29 +79,6 @@ k8s/
     ├── staging-values.yaml
     └── prod-values.yaml
 
-
-
-test the app :
-
-
-kubectl apply -k k8s/overlays/dev
-
- Delete via Kustomize
-
- kubectl delete -k k8s/overlays/dev
-
- Deploying via Helm 
-
- Install the App
-helm install my-app ./k8s/helm -f ./k8s/values/dev-values.yaml
-
-Upgrade/Update the App
-helm upgrade my-app ./k8s/helm -f ./k8s/values/dev-values.yaml
-Uninstall
-helm uninstall my-app
-Test the Application:
-Port Forward
-kubectl port-forward svc/my-app-service -n dev 8080:80
 ---
 
 # --------------------
@@ -139,32 +116,6 @@ This project deploys a Spring Boot + MySQL application to **Kubernetes on AWS EK
 
 ---
 
-## 📁 Folder Structure
-
-```bash
-.
-├── helm/                          # Helm chart for application
-│   ├── Chart.yaml
-│   ├── values.yaml
-│   └── templates/
-├── k8s/                           # Kustomize folder
-│   ├── base/
-│   └── overlays/
-│       ├── dev/
-│       ├── staging/
-│       └── prod/
-├── terraform/                     # Terraform scripts
-│   ├── backend.tf
-│   ├── main.tf
-│   ├── variables.tf
-│   └── outputs.tf
-├── .github/workflows/
-│   └── crewmeister-ci.yaml        # CI pipeline
-├── Dockerfile
-├── pom.xml
-└── README.md
-```
-
 ---
 
 ## ⚙️ CI/CD Pipeline (`.github/workflows/crewmeister-ci.yaml`)
@@ -187,7 +138,6 @@ Before running the pipeline, ensure:
 - External Secrets Operator is installed in the cluster
 - You created the required OIDC IAM Role for GitHub → AWS access
 
-```bash
 # Create AWS Secret for DB password
 aws secretsmanager create-secret \
   --name devops-challenge-secret \
@@ -244,7 +194,7 @@ Access the app at: [http://localhost:8080](http://localhost:8080)
 
 ---
 
-## ✅ Notes
+## ✅ Notes...
 
 - Keep AWS credentials secure. Use GitHub OIDC for temporary credentials.
 - Secrets should be pulled via External Secrets, not stored in `values.yaml`.

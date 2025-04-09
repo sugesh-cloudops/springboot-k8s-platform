@@ -3,8 +3,8 @@ kind: StatefulSet
 metadata:
   name: mysql
 spec:
-  serviceName: mysql-headless
   replicas: 1
+  serviceName: mysql-headless
   selector:
     matchLabels:
       app: mysql
@@ -15,20 +15,20 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: mysql:8
+          image: {{ .Values.mysql.image }}
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secret
-                  key: mysql-root-password
+                  name: {{ .Values.mysql.secretKeyRef.name }}
+                  key: {{ .Values.mysql.secretKeyRef.key }}
             - name: MYSQL_DATABASE
               valueFrom:
                 configMapKeyRef:
                   name: mysql-config
                   key: database-name
           ports:
-            - containerPort: 3306
+            - containerPort: {{ .Values.mysql.port }}
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
@@ -39,4 +39,4 @@ spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: 1Gi
+            storage: {{ .Values.mysql.pvc.storage }}
