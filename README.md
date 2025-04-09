@@ -244,7 +244,7 @@ Access the app at: [http://localhost:8080](http://localhost:8080)
 
 ---
 
-## ✅ Notes
+## ✅ Notes...
 
 - Keep AWS credentials secure. Use GitHub OIDC for temporary credentials.
 - Secrets should be pulled via External Secrets, not stored in `values.yaml`.
