@@ -100,22 +100,6 @@ k8s/
 #
 
 
-
-
------------------
-
-# 🚀 Crewmeister Spring Boot App on Kubernetes
-
-This project deploys a Spring Boot + MySQL application to **Kubernetes on AWS EKS** using:
-
-- 🐳 Docker & Maven
-- 📆 Helm & Kustomize
-- 🔐 AWS Secrets Manager via External Secrets Operator
-- ☁️ Terraform for Infra-as-Code (S3, DynamoDB, IAM, EKS)
-- 🛠️ GitHub Actions for CI/CD
-
----
-
 ---
 
 ## ⚙️ CI/CD Pipeline (`.github/workflows/crewmeister-ci.yaml`)
